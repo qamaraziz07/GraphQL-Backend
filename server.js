@@ -5,12 +5,13 @@ const {
 const { ApolloServer } = require("apollo-server");
 const { typeDefs } = require("./schemaTypes");
 const { Mutation } = require("./resolvers/Mutation");
-const { Query } = require("./resolvers/Query");
+const { Query,User } = require("./resolvers/Query");
+
 const mongoose = require("mongoose");
 require("dotenv").config();
 
 const context = ({ req }) => {
-  const { authorization } = req.headers.authorization || "";
+  const { authorization } = req.headers;
   if (authorization) {
     const { userId } = jwt.verify(authorization, process.env.JWT_SECRET);
     return { userId };
@@ -22,6 +23,7 @@ const server = new ApolloServer({
   resolvers: {
     Mutation,
     Query,
+    User
   },
   context,
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
